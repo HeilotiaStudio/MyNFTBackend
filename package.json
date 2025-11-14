@@ -1,0 +1,11 @@
+{
+  "name": "my-push-backend",
+  "version": "1.0.0",
+  "description": "Netlify functions for web push",
+  "main": "netlify/functions/send-push.js",
+  "scripts": {},
+  "dependencies": {
+    "web-push": "^3.5.0"
+  }
+}
+
