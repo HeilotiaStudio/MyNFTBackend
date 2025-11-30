@@ -1,5 +1,6 @@
 import { neon } from "@netlify/neon";
 import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 
 export default async (req) => {
   try {
@@ -8,17 +9,19 @@ export default async (req) => {
 
     const { firstName, lastName, email, password } = body;
 
-    // hash the password
     const passwordHash = await bcrypt.hash(password, 10);
+    const walletHash = crypto.createHash("sha256")
+                         .update(email + Date.now())
+                         .digest("hex");
 
-    // Insert record. neon generates id automatically if table uses uuid DEFAULT gen_random_uuid()
     const [user] = await sql`
-      INSERT INTO users (first_name, last_name, email, password_hash, created_at)
+      INSERT INTO users (first_name, last_name, email, password_hash, wallet_hash, created_at)
       VALUES (
         ${firstName},
         ${lastName},
         ${email},
         ${passwordHash},
+        ${walletHash},
         NOW()
       )
       RETURNING id;
@@ -40,3 +43,4 @@ export default async (req) => {
     );
   }
 };
+
